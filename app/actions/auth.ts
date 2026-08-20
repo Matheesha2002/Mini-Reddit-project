@@ -10,6 +10,7 @@ import { createSession, deleteSession } from "../../lib/session";
 // =============================
 // REGISTER VALIDATION
 // =============================
+
 const registerSchema = z.object({
   username: z
     .string()
@@ -27,6 +28,7 @@ const registerSchema = z.object({
 // =============================
 // REGISTER USER
 // =============================
+
 export async function registerUser(formData: FormData) {
   const username = formData.get("username");
   const email = formData.get("email");
@@ -79,6 +81,7 @@ export async function registerUser(formData: FormData) {
 // =============================
 // LOGIN VALIDATION
 // =============================
+
 const loginSchema = z.object({
   email: z
     .string()
@@ -90,9 +93,21 @@ const loginSchema = z.object({
 });
 
 // =============================
+// LOGIN STATE
+// =============================
+
+export type LoginState = {
+  error?: string;
+};
+
+// =============================
 // LOGIN USER
 // =============================
-export async function loginUser(formData: FormData) {
+
+export async function loginUser(
+  prevState: LoginState,
+  formData: FormData
+): Promise<LoginState> {
   const email = formData.get("email");
   const password = formData.get("password");
 
@@ -103,7 +118,9 @@ export async function loginUser(formData: FormData) {
   });
 
   if (!result.success) {
-    throw new Error("Invalid login details");
+    return {
+      error: "Please enter a valid email and password.",
+    };
   }
 
   // Find user by email
@@ -113,8 +130,11 @@ export async function loginUser(formData: FormData) {
     },
   });
 
+  // User not found
   if (!user) {
-    throw new Error("Invalid email or password");
+    return {
+      error: "Invalid email or password.",
+    };
   }
 
   // Compare entered password with hashed password
@@ -123,8 +143,11 @@ export async function loginUser(formData: FormData) {
     user.password
   );
 
+  // Wrong password
   if (!passwordMatch) {
-    throw new Error("Invalid email or password");
+    return {
+      error: "Invalid email or password.",
+    };
   }
 
   // Create login session
@@ -137,6 +160,7 @@ export async function loginUser(formData: FormData) {
 // =============================
 // LOGOUT USER
 // =============================
+
 export async function logoutUser() {
   await deleteSession();
 

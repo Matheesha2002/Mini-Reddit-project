@@ -1,7 +1,23 @@
+"use client";
+
 import Link from "next/link";
-import { loginUser } from "../actions/auth";
+import { useActionState } from "react";
+
+import {
+  loginUser,
+  type LoginState,
+} from "../actions/auth";
+
+const initialState: LoginState = {
+  error: "",
+};
 
 export default function LoginPage() {
+  const [state, formAction, pending] = useActionState(
+    loginUser,
+    initialState
+  );
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md rounded-lg bg-white p-6 shadow">
@@ -9,7 +25,7 @@ export default function LoginPage() {
           Login
         </h1>
 
-        <form action={loginUser} className="space-y-4">
+        <form action={formAction} className="space-y-4">
           <div>
             <label
               htmlFor="email"
@@ -23,8 +39,8 @@ export default function LoginPage() {
               name="email"
               type="email"
               required
-              className="w-full rounded-md border px-3 py-2 text-black"
               placeholder="Enter email"
+              className="w-full rounded-md border px-3 py-2 text-black"
             />
           </div>
 
@@ -41,21 +57,28 @@ export default function LoginPage() {
               name="password"
               type="password"
               required
-              className="w-full rounded-md border px-3 py-2 text-black"
               placeholder="Enter password"
+              className="w-full rounded-md border px-3 py-2 text-black"
             />
           </div>
 
+          {state.error && (
+            <p className="rounded-md bg-red-100 px-3 py-2 text-sm text-red-700">
+              {state.error}
+            </p>
+          )}
+
           <button
             type="submit"
-            className="w-full rounded-md bg-black px-4 py-2 text-white"
+            disabled={pending}
+            className="w-full rounded-md bg-black px-4 py-2 text-white disabled:opacity-50"
           >
-            Login
+            {pending ? "Logging in..." : "Login"}
           </button>
         </form>
 
         <p className="mt-5 text-center text-sm text-gray-600">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             href="/register"
             className="font-bold text-blue-700 hover:text-blue-900 hover:underline"
