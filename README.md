@@ -1,36 +1,305 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mini Reddit
 
-## Getting Started
+Mini Reddit is a simplified Reddit-like social media application built using Next.js, TypeScript, Tailwind CSS, PostgreSQL, and Prisma ORM.
 
-First, run the development server:
+Users can create accounts, create posts, vote on posts, add comments, search posts, and view their profile and reputation score.
+
+## Features
+
+### Authentication
+
+* User Registration
+* User Login
+* User Logout
+* Password hashing using bcrypt
+* Session-based authentication
+* Protected pages and actions
+
+### Posts
+
+* Create posts
+* View all posts
+* View individual posts
+* Edit own posts
+* Posts can only be edited within 10 minutes of creation
+* Soft delete posts
+* Maximum 5 posts per user per hour
+
+### Voting
+
+* Upvote posts
+* Downvote posts
+* Remove a vote by clicking the same vote again
+* Change Upvote to Downvote
+* Change Downvote to Upvote
+* One vote per user per post
+
+### Comments
+
+* Add comments to posts
+* View comments under posts
+* Delete own comments
+
+### Search
+
+Users can search posts by:
+
+* Title
+* Content
+
+### User Profile
+
+The profile page displays:
+
+* Username
+* Join Date
+* Total Posts
+* Reputation Score
+
+### Reputation
+
+Reputation is calculated using:
+
+```text
+Upvote   = +5
+Downvote = -2
+```
+
+### Post Ranking
+
+Posts are ranked using:
+
+* Upvotes
+* Downvotes
+* Comments
+* Post age
+
+Current ranking formula:
+
+```text
+Score =
+(Upvotes × 5)
+- (Downvotes × 2)
++ (Comments × 2)
+- (Post Age in Hours × 0.1)
+```
+
+### Responsive Design
+
+The application supports:
+
+* Desktop
+* Tablet
+* Mobile
+
+## Tech Stack
+
+### Frontend
+
+* Next.js
+* React
+* TypeScript
+* Tailwind CSS
+
+### Backend
+
+* Next.js Server Actions
+
+### Database
+
+* PostgreSQL
+* Supabase
+
+### ORM
+
+* Prisma ORM
+
+### Authentication / Validation
+
+* bcryptjs
+* jose
+* Zod
+
+## Project Structure
+
+```text
+mini-reddit/
+│
+├── app/
+│   ├── actions/
+│   │   ├── auth.ts
+│   │   ├── post.ts
+│   │   ├── vote.ts
+│   │   └── comment.ts
+│   │
+│   ├── login/
+│   ├── register/
+│   ├── profile/
+│   ├── posts/
+│   │   ├── create/
+│   │   └── [id]/
+│   │       └── edit/
+│   │
+│   ├── loading.tsx
+│   ├── layout.tsx
+│   └── page.tsx
+│
+├── lib/
+│   ├── prisma.ts
+│   └── session.ts
+│
+├── prisma/
+│   ├── migrations/
+│   └── schema.prisma
+│
+├── prisma.config.ts
+├── package.json
+└── README.md
+```
+
+## Database Models
+
+The application contains four main database models:
+
+```text
+User
+ ├── Posts
+ ├── Votes
+ └── Comments
+
+Post
+ ├── Author
+ ├── Votes
+ └── Comments
+
+Vote
+ ├── User
+ └── Post
+
+Comment
+ ├── User
+ └── Post
+```
+## ER Diagram
+
+The database ER Diagram for the Mini Reddit application is shown below:
+
+![Mini Reddit ER Diagram](docs/mini-reddit-er-diagram.png)
+
+
+## Environment Variables
+
+Create a `.env` file in the root directory.
+
+```env
+DATABASE_URL="your_database_url"
+DIRECT_URL="your_direct_database_url"
+SESSION_SECRET="your_session_secret"
+```
+
+Do not upload the `.env` file to GitHub.
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/Matheesha2002/Mini-Reddit-project.git
+```
+
+Go to the project directory:
+
+```bash
+cd Mini-Reddit-project
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Generate Prisma Client:
+
+```bash
+npx prisma generate
+```
+
+Run database migrations:
+
+```bash
+npx prisma migrate dev
+```
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open the application in the browser:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Prisma Studio
 
-## Learn More
+To view database records:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npx prisma studio
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Prisma Studio allows you to view:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+* Users
+* Posts
+* Votes
+* Comments
 
-## Deploy on Vercel
+## Production Build
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Run:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run build
+```
+
+The project should compile successfully without TypeScript or Next.js build errors.
+
+## Business Rules
+
+* Only authenticated users can create posts, vote, and comment.
+* A user can vote only once per post.
+* Clicking the same vote again removes the vote.
+* Users can only edit their own posts.
+* Posts can only be edited within 10 minutes of creation.
+* Users can only delete their own posts.
+* Post deletion uses Soft Delete.
+* Deleted posts remain in the database.
+* Deleted posts display:
+
+```text
+This post has been deleted. lol
+```
+
+* Comments remain associated with deleted posts.
+* A user can create a maximum of 5 posts per hour.
+* Users can only delete their own comments.
+
+## Build Status
+
+```text
+Next.js Production Build: Successful
+TypeScript Check: Successful
+Database Migration: Successful
+```
+
+## Author
+
+Kavindu Matheesha
+
+## License
+
+This project was developed as part of an internship self-study assignment.
