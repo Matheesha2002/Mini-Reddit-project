@@ -219,7 +219,7 @@ export default async function HomePage({
                   <>
                     {/* DELETED POST */}
                     <p className="text-lg font-semibold text-gray-600">
-                      This post has been deleted. lol
+                      This post has been deleted.
                     </p>
 
                     <div className="mt-4 text-sm text-gray-500">

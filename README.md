@@ -282,7 +282,7 @@ The project should compile successfully without TypeScript or Next.js build erro
 * Deleted posts display:
 
 ```text
-This post has been deleted. lol
+This post has been deleted.
 ```
 
 * Comments remain associated with deleted posts.
