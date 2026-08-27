@@ -102,7 +102,7 @@ export default async function PostPage({
           {/* Deleted Post */}
           {post.deletedAt ? (
             <h1 className="text-2xl font-bold text-gray-600">
-              This post has been deleted. lol
+              This post has been deleted.
             </h1>
           ) : (
             <>

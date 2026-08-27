@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-
 import { prisma } from "../../../../lib/prisma";
 import { getSession } from "../../../../lib/session";
 import { updatePost } from "../../../actions/post";

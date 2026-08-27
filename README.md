@@ -25,6 +25,7 @@ Users can create accounts, create posts, vote on posts, add comments, search pos
 * Soft delete posts
 * Maximum 5 posts per user per hour
 
+
 ### Voting
 
 * Upvote posts
